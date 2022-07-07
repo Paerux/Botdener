@@ -1,0 +1,1 @@
+bot_confige tokeni gir xd
