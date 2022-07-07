@@ -133,4 +133,4 @@ def case_sensitive_replace(string, old, new):
     return regex.sub(repl, string)
 
 
-client.run(config['bot_token'])
+client.run(config['token'])
