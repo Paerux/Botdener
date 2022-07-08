@@ -1,23 +1,22 @@
-import random
-from datetime import datetime
-import discord
 import logging
-from discord import FFmpegPCMAudio
-import database
-import speech_recognition as sr
+import random
 import re
+from datetime import datetime
+from discord.ext import commands # noqa
+
+import discord  # noqa
+import speech_recognition as sr
 import yaml
+from discord import FFmpegPCMAudio  # noqa
+from enum import Enum
+
+import database
 
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
 handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
-
-uyanmis_list = [217762767120105472, 169562873616531456, 124328951391846400, 172917614559887361, 129655277665386496,
-                229030342277726208, 241825884535783424, 158132429570179072,
-                213101741049249792, 160515892847968256,
-                248299259202502666, 226501613173473280]
 
 client = discord.Client()
 
@@ -34,6 +33,7 @@ def load_config():
 
 
 config = load_config()
+uyanmis_list = config['uyanmis_users']
 
 
 @client.event
@@ -57,17 +57,18 @@ async def on_message(message):
     if message.author == client.user:
         return
 
+    global last_reaction
+    global last_copark
     if "lost ark" in message.content.lower():
         rand = random.randint(0, 100)
         if rand < 50 and (datetime.now() - last_reaction).seconds > 300:
+            last_reaction = datetime.now()
             await message.add_reaction('<:ICANT:980378964692434975>')
         else:
             rand = random.randint(0, 100)
             if rand < 50 and (datetime.now() - last_copark).seconds > 300:
+                last_copark = datetime.now()
                 await message.channel.send(case_sensitive_replace(message.content, 'lost ark', 'çöp ark'))
-
-    if "!xd" in message.content:
-        await play_sound(message.author, message.author.voice.channel)
 
 
 @client.event
@@ -132,5 +133,65 @@ def case_sensitive_replace(string, old, new):
     regex = re.compile(re.escape(old), re.I)
     return regex.sub(repl, string)
 
+
+bot = commands.Bot('!')
+connections = {}
+
+
+class Sinks(Enum):
+    mp3 = discord.sinks.MP3Sink()
+    wav = discord.sinks.WaveSink()
+    pcm = discord.sinks.PCMSink()
+    ogg = discord.sinks.OGGSink()
+    mka = discord.sinks.MKASink()
+    mkv = discord.sinks.MKVSink()
+    mp4 = discord.sinks.MP4Sink()
+    m4a = discord.sinks.M4ASink()
+
+
+async def finished_callback(sink, channel: discord.TextChannel, *args):
+    recorded_users = [f"<@{user_id}>" for user_id, audio in sink.audio_data.items()]
+    await sink.vc.disconnect()
+    files = [
+        discord.File(audio.file, f"{user_id}.{sink.encoding}")
+        for user_id, audio in sink.audio_data.items()
+    ]
+    await channel.send(
+        f"Finished! Recorded audio for {', '.join(recorded_users)}.", files=files
+    )
+
+
+@bot.command()
+async def start(ctx: discord.ApplicationContext, sink: Sinks):
+    """
+    Record your voice!
+    """
+    voice = ctx.author.voice
+
+    if not voice:
+        return await ctx.respond("You're not in a vc right now")
+
+    vc = await voice.channel.connect()
+    connections.update({ctx.guild.id: vc})
+
+    vc.start_recording(
+        sink.value,
+        finished_callback,
+        ctx.channel,
+    )
+
+    await ctx.respond("The recording has started!")
+
+
+@bot.command()
+async def stop(ctx: discord.ApplicationContext):
+    """Stop recording."""
+    if ctx.guild.id in connections:
+        vc = connections[ctx.guild.id]
+        vc.stop_recording()
+        del connections[ctx.guild.id]
+        await ctx.delete()
+    else:
+        await ctx.respond("Not recording in this guild.")
 
 client.run(config['token'])

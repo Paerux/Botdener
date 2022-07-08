@@ -24,7 +24,6 @@ def add_uyanmis(id, time):
     with access_database() as data:
         data[id] = time
 
-
 def get_last_uyanmis(id):
     with access_database() as data:
         try:
