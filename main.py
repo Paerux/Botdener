@@ -46,7 +46,7 @@ async def on_message(message):
         return
 
     global last_reaction
-    
+
     if "lost ark" in message.content.lower():
         print('triggered')
         rand = random.randint(0, 100)
