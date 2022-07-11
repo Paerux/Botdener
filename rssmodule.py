@@ -32,6 +32,7 @@ class RSSModule(commands.Cog):
         self.is_running = False
 
     def check_all_rss(self):
+        print('Checking RSS')
         self.check_rss('https://devtrackers.gg/warcraft.rss', 'DevTracker - WoW')
         self.check_rss('https://devtrackers.gg/lost-ark.rss', 'DevTracker - Çöp Ark')
 
