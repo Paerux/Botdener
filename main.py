@@ -5,6 +5,7 @@ import yaml
 from discord import FFmpegPCMAudio, ClientException  # noqa
 import database
 import Logger
+from serverstatusmodule import ServerStatusModule
 from textmodule import TextModule
 from utilities import Utilities
 from voicemodule import VoiceModule
@@ -28,6 +29,9 @@ bot.add_cog(Utilities(bot))
 bot.add_cog(TwitterModule(bot))
 bot.add_cog(TextModule(bot, config))
 
+serverstatusmodule = ServerStatusModule(bot, 10)
+bot.add_cog(serverstatusmodule)
+
 
 @bot.event
 async def on_ready():
@@ -36,6 +40,7 @@ async def on_ready():
     print(twitter.get_rules())
     twitter.assign_bot(bot)
     twitter.filter(threaded=True)
+    serverstatusmodule.start()
 
 
 bot.run(config['token'])

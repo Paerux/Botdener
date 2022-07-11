@@ -49,7 +49,7 @@ class VoiceModule(commands.Cog):
     async def play_sound(member, voice_channel):
         try:
             database.add_uyanmis(str(member.id), datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
-            voice = await utilities.Utilities.join_channel(voice_channel)
+            voice = await VoiceModule.join_channel(voice_channel)
             source = FFmpegPCMAudio('sounds/uyanmis.mp3')
             voice.play(source)
         except ClientException as e:
