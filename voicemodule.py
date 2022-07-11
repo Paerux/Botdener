@@ -7,6 +7,7 @@ from discord.ext import commands  # noqa
 import speech_recognition as sr
 
 import database
+import utilities
 
 
 class VoiceRecognition(commands.Cog):
@@ -35,23 +36,23 @@ class VoiceRecognition(commands.Cog):
                 else:
                     await self.play_sound(member, voice_channel)
 
-    async def play_sound(self, member, voice_channel):
+    @staticmethod
+    async def play_sound(member, voice_channel):
         try:
             database.add_uyanmis(str(member.id), datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
-            voice = await self.join_channel(voice_channel)
+            voice = await utilities.Utilities.join_channel(voice_channel)
             source = FFmpegPCMAudio('sounds/uyanmis.mp3')
             voice.play(source)
         except ClientException as e:
             print(e)
 
-    @staticmethod
-    async def join_channel(channel):
-        bot_connection: discord.VoiceClient = channel.guild.voice_client
+    @commands.command()
+    async def kaybol(self, ctx):
+        bot_connection: discord.VoiceClient = ctx.guild.voice_client
         if bot_connection:
-            await bot_connection.move_to(channel)
-            return bot_connection
+            await bot_connection.disconnect()
         else:
-            return await channel.connect()
+            print('kaybol : Not connected to any channel')
 
     @commands.command()
     async def start(self, ctx):

@@ -33,6 +33,7 @@ bot.add_cog(TextModule(bot, config))
 async def on_ready():
     print('Logged in as {0.user}'.format(bot))
     twitter = TwitterModule.TwitterStream(config['twitter']['bearer_token'], wait_on_rate_limit=True)
+    print(twitter.get_rules())
     twitter.assign_bot(bot)
     twitter.filter(threaded=True)
 

@@ -25,9 +25,10 @@ class TwitterModule(commands.Cog):
 
         def on_data(self, data):
             tweet = json.loads(data)
-            if tweet['matching_rules'][0]['id'] == '1546126248472109057':
+            print(tweet)
+            if tweet['matching_rules'][0]['id'] == '1546402585137004544':
                 name = 'Botdener'
-            elif tweet['matching_rules'][0]['id'] == '1546126255929671680':
+            elif tweet['matching_rules'][0]['id'] == '1546402592909139969':
                 name = 'Çöp Ark'
             else:
                 name = 'Unknown'
