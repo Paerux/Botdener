@@ -10,13 +10,22 @@ import database
 import utilities
 
 
-class VoiceRecognition(commands.Cog):
+class VoiceModule(commands.Cog):
 
     def __init__(self, bot, config):
         self.bot = bot
         self.connections = {}
         self.config = config
         self.uyanmis_list = config['uyanmis_users']
+
+    @staticmethod
+    async def join_channel(channel):
+        bot_connection: discord.VoiceClient = channel.guild.voice_client
+        if bot_connection:
+            await bot_connection.move_to(channel)
+            return bot_connection
+        else:
+            return await channel.connect()
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):

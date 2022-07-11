@@ -7,7 +7,7 @@ import database
 import Logger
 from textmodule import TextModule
 from utilities import Utilities
-from voicemodule import VoiceRecognition
+from voicemodule import VoiceModule
 from twittermodule import TwitterModule
 
 logmanager = Logger.LogManager()
@@ -23,7 +23,7 @@ def load_config():
 
 
 config = load_config()
-bot.add_cog(VoiceRecognition(bot, config))
+bot.add_cog(VoiceModule(bot, config))
 bot.add_cog(Utilities(bot))
 bot.add_cog(TwitterModule(bot))
 bot.add_cog(TextModule(bot, config))

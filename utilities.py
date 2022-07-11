@@ -42,11 +42,4 @@ class Utilities(commands.Cog):
         regex = re.compile(re.escape(old), re.I)
         return regex.sub(repl, string)
 
-    @staticmethod
-    async def join_channel(channel):
-        bot_connection: discord.VoiceClient = channel.guild.voice_client
-        if bot_connection:
-            await bot_connection.move_to(channel)
-            return bot_connection
-        else:
-            return await channel.connect()
+
