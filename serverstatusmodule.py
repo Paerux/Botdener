@@ -1,7 +1,7 @@
 from discord.ext import commands  # noqa
 import threading
 import requests
-from bs4 import BeautifulSoup as bs
+from bs4 import BeautifulSoup
 
 
 class ServerStatusModule(commands.Cog):
@@ -25,12 +25,13 @@ class ServerStatusModule(commands.Cog):
 
     def stop(self):
         self._timer.cancel()
+
         self.is_running = False
 
     def check_maintenance(self):
         req = requests.get('https://www.playlostark.com/en-gb/support/server-status')
         source_code = req.text
-        soup = bs(source_code, 'html.parser')
+        soup = BeautifulSoup(source_code, 'html.parser')
         items = soup.select('.ags-ServerStatus-content-responses-response-server:-soup-contains("Kadan")')
         for tag in items:
             if tag.find('div', attrs={
@@ -39,8 +40,6 @@ class ServerStatusModule(commands.Cog):
                 if self.last_status == 'Down':
                     self.last_status = 'Live'
                     self.bot.loop.create_task(self.send_status_message('Kadan server is up Poggers'))
-                else:
-                    print('Status not changed')
             elif tag.find('div', attrs={
                 'class': 'ags-ServerStatus-content-responses-response-server-status '
                          'ags-ServerStatus-content-responses-response-server-status--maintenance'}):
