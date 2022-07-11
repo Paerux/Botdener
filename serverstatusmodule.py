@@ -38,7 +38,7 @@ class ServerStatusModule(commands.Cog):
                          'ags-ServerStatus-content-responses-response-server-status--good'}):
                 if self.last_status == 'Down':
                     self.last_status = 'Live'
-                    self.bot.loop.create_task(self.send_status_message('@Encore Kadan server is down'))
+                    self.bot.loop.create_task(self.send_status_message('Kadan server is up Poggers'))
                 else:
                     print('Status not changed')
             elif tag.find('div', attrs={
@@ -46,7 +46,7 @@ class ServerStatusModule(commands.Cog):
                          'ags-ServerStatus-content-responses-response-server-status--maintenance'}):
                 if self.last_status == 'Live':
                     self.last_status = 'Down'
-                    self.bot.loop.create_task(self.send_status_message('@Encore Kadan server is up Poggers'))
+                    self.bot.loop.create_task(self.send_status_message('Kadan server is up Down'))
             else:
                 print('Unknown html')
 
