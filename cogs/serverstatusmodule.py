@@ -1,3 +1,5 @@
+import logging
+
 from discord.ext import commands  # noqa
 import threading
 import requests
@@ -11,6 +13,7 @@ class ServerStatusModule(commands.Cog):
         self.is_running = False
         self._timer = None
         self.last_status = 'Live'
+        self.logger = logging.getLogger(__name__)
 
     def _run(self):
         self.is_running = False
@@ -45,9 +48,12 @@ class ServerStatusModule(commands.Cog):
                          'ags-ServerStatus-content-responses-response-server-status--maintenance'}):
                 if self.last_status == 'Live':
                     self.last_status = 'Down'
-                    self.bot.loop.create_task(self.send_status_message('Kadan server is up Down'))
+                    self.bot.loop.create_task(self.send_status_message('Kadan server is up Down Sadge'))
             else:
-                print('Unknown html')
+                self.logger.warning('maintenance server tag not found')
+                if self.last_status == 'Live':
+                    self.last_status = 'Down'
+                    self.bot.loop.create_task(self.send_status_message('Kadan server is up Down Sadge'))
 
     async def send_status_message(self, message):
         channel = self.bot.get_channel(891317992628031528)

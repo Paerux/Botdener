@@ -1,7 +1,8 @@
-import asyncio
+import logging
 import re
 
 import discord
+from discord import FFmpegPCMAudio, ClientException
 from discord.ext import commands  # noqa
 
 
@@ -16,9 +17,12 @@ class Utilities(commands.Cog):
 
     @staticmethod
     def case_sensitive_replace(string, old, new):
-        """ replace occurrences of old with new, within string
-            replacements will match the case of the text it replaces
-        """
+        length_old = len(old.split())
+        length_new = len(new.split())
+
+        if length_old == length_new > 1:
+            for x in range(length_new):
+                string = Utilities.case_sensitive_replace(string, old.split()[x], new.split()[x])
 
         def repl(match):
             current = match.group()
@@ -42,4 +46,20 @@ class Utilities(commands.Cog):
         regex = re.compile(re.escape(old), re.I)
         return regex.sub(repl, string)
 
+    @staticmethod
+    async def join_channel(channel):
+        bot_connection: discord.VoiceClient = channel.guild.voice_client
+        if bot_connection:
+            await bot_connection.move_to(channel)
+            return bot_connection
+        else:
+            return await channel.connect()
 
+    @staticmethod
+    async def play_sound(voice_channel, sound):
+        try:
+            voice = await Utilities.join_channel(voice_channel)
+            source = FFmpegPCMAudio(sound)
+            voice.play(source)
+        except ClientException as e:
+            logging.getLogger(__name__).error(e)

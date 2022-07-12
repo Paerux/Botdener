@@ -1,4 +1,5 @@
 import datetime
+import logging
 
 import discord  # noqa
 from discord import ClientException, FFmpegPCMAudio  # noqa
@@ -7,7 +8,7 @@ from discord.ext import commands  # noqa
 import speech_recognition as sr
 
 import database
-import utilities
+from cogs.utilities import Utilities
 
 
 class VoiceModule(commands.Cog):
@@ -17,20 +18,12 @@ class VoiceModule(commands.Cog):
         self.connections = {}
         self.config = config
         self.uyanmis_list = config['uyanmis_users']
-
-    @staticmethod
-    async def join_channel(channel):
-        bot_connection: discord.VoiceClient = channel.guild.voice_client
-        if bot_connection:
-            await bot_connection.move_to(channel)
-            return bot_connection
-        else:
-            return await channel.connect()
+        self.logger = logging.getLogger(__name__)
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
         if not before.channel and after.channel:
-            print(f'{member} has joined a voice channel')
+            self.logger.info(f'{member} has joined a voice channel')
             voice_channel = member.voice.channel
             if not voice_channel:
                 return
@@ -39,21 +32,11 @@ class VoiceModule(commands.Cog):
                 last_uyanmis = database.get_last_uyanmis(str(member.id))
                 if last_uyanmis is not None:
                     time_difference = (datetime.datetime.now() - last_uyanmis).seconds
-                    print(time_difference)
-                    if time_difference > 300:
-                        await self.play_sound(member, voice_channel)
-                else:
-                    await self.play_sound(member, voice_channel)
+                    if time_difference < 300:
+                        return
 
-    @staticmethod
-    async def play_sound(member, voice_channel):
-        try:
-            database.add_uyanmis(str(member.id), datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
-            voice = await VoiceModule.join_channel(voice_channel)
-            source = FFmpegPCMAudio('sounds/uyanmis.mp3')
-            voice.play(source)
-        except ClientException as e:
-            print(e)
+                await Utilities.play_sound(voice_channel, 'sounds/erdener/uyanmis.mp3')
+                database.add_uyanmis(str(member.id), datetime.datetime.now().strftime(database.DATE_FORMAT))
 
     @commands.command()
     async def kaybol(self, ctx):
@@ -61,7 +44,7 @@ class VoiceModule(commands.Cog):
         if bot_connection:
             await bot_connection.disconnect()
         else:
-            print('kaybol : Not connected to any channel')
+            self.logger.warning('kaybol : Not connected to any channel')
 
     @commands.command()
     async def start(self, ctx):
@@ -84,8 +67,8 @@ class VoiceModule(commands.Cog):
                 ctx.channel,
             )
             await ctx.reply("The recording has started!")
-        except ClientException as exception:
-            print(exception)
+        except ClientException as e:
+            self.logger.error(e)
 
     @staticmethod
     async def finished_callback(sink, channel: discord.TextChannel, *args):

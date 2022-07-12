@@ -12,8 +12,12 @@ uyanmis_users:
   - 248299259202502666
   - 226501613173473280
 
-sounds:
-  uyan: 'sounds/uyanmis.wav'
-
 token:
-  
+  ''
+
+twitter:
+  access_token : ''
+  access_token_secret : ''
+  consumer_key: ''
+  consumer_secret: ''
+  bearer_token : ''

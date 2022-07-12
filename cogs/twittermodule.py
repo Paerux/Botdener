@@ -1,9 +1,9 @@
 import json
+import logging
 
 import tweepy
 from discord.ext import commands  # noqa
-
-from utilities import Utilities
+from cogs.utilities import Utilities
 
 
 class TwitterModule(commands.Cog):
@@ -12,6 +12,7 @@ class TwitterModule(commands.Cog):
 
     class TwitterStream(tweepy.StreamingClient):
         bot = None
+        logger = logging.getLogger(__name__)
 
         async def send_tweet(self, message):
             channel = self.bot.get_channel(891317992628031528)
@@ -21,11 +22,11 @@ class TwitterModule(commands.Cog):
             self.bot = bot
 
         def on_tweet(self, tweet):  # noqa
-            print("on_tweet")
+            self.logger.info('on_tweet')
 
         def on_data(self, data):
             tweet = json.loads(data)
-            print(tweet)
+            self.logger.info(tweet)
             if tweet['matching_rules'][0]['id'] == '1546402585137004544':
                 name = 'Botdener'
             elif tweet['matching_rules'][0]['id'] == '1546402592909139969':
@@ -38,17 +39,16 @@ class TwitterModule(commands.Cog):
             self.bot.loop.create_task(self.send_tweet(text))
 
         def on_errors(self, errors):
-            print(errors)
+            self.logger.error(errors)
 
         def on_connect(self):
-            print("onconnect")
+            self.logger.info('on_connect')
 
         def on_disconnect(self):
-            print("ondisconnect")
+            self.logger.info('on_disconnect')
 
         def on_exception(self, exception):
-            print(exception)
+            self.logger.error(exception)
 
         def on_request_error(self, code):
-            print("request error")
-
+            self.logger.error('on_request_error: ' + code)
