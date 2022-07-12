@@ -35,7 +35,7 @@ class VoiceModule(commands.Cog):
                         return
 
                 await Utilities.play_sound(voice_channel, 'sounds/erdener/uyanmis.mp3')
-                database.add_uyanmis(str(member.id), datetime.datetime.now().strftime(database.DATE_FORMAT))
+                database.add_uyanmis(str(member.id), datetime.datetime.now().strftime(database.UYANMIS_DATE_FORMAT))
 
     @commands.command()
     async def kaybol(self, ctx):

@@ -44,6 +44,79 @@ class TextModule(commands.Cog):
         else:
             await ctx.channel.send('Unknown command')
 
+    @commands.command()
+    async def tulca(self, ctx, todo: typing.Optional[str] = 'random'):
+        voice = ctx.author.voice
+        if not voice:
+            logger.info("!erdener triggered but not in voice channel")
+            return
+
+        if todo == 'lailai':
+            await Utilities.play_sound(voice.channel, 'sounds/tulca/lailai.mp3')
+        elif todo == 'brk':
+            await Utilities.play_sound(voice.channel, 'sounds/tulca/brk.mp3')
+        elif todo is None or todo == '' or todo == 'random':
+            await Utilities.play_sound(voice.channel, 'sounds/tulca/' + random.choice(os.listdir('sounds/tulca')))
+        else:
+            await ctx.channel.send('Unknown command')
+
+    @commands.command()
+    async def ses(self, ctx, todo: typing.Optional[str] = 'random'):
+        voice = ctx.author.voice
+        if not voice:
+            logger.info("!erdener triggered but not in voice channel")
+            return
+
+        if todo == 'alohade':
+            await Utilities.play_sound(voice.channel, 'sounds/alohade.mp3')
+        elif todo == 'rhino':
+            await Utilities.play_sound(voice.channel, 'sounds/rhino.mp3')
+        elif todo == 'dojo':
+            await Utilities.play_sound(voice.channel, 'sounds/loa/dojo.mpeg')
+        elif todo == 'öldüdeme':
+            await Utilities.play_sound(voice.channel, 'sounds/oldulanisteoldu.mp3')
+        elif todo == 'mantı':
+            await Utilities.play_sound(voice.channel, 'sounds/manti.mp3')
+        elif todo == 'tabi':
+            await Utilities.play_sound(voice.channel, 'sounds/tabiefendim.mp3')
+        elif todo == 'bruh':
+            await Utilities.play_sound(voice.channel, 'sounds/bruh.mp3')
+        elif todo == 'kırkharamiler':
+            if ctx.author.id == 241562701497761792:
+                await Utilities.play_sound(voice.channel, 'sounds/kirkharamiler.mp3')
+            else:
+                await ctx.channel.send('Tulca only command')
+        else:
+            await ctx.channel.send('Unknown command')
+
+    @commands.command()
+    async def hearthstone(self, ctx, todo: typing.Optional[str] = 'random'):
+        voice = ctx.author.voice
+        if not voice:
+            logger.info("!erdener triggered but not in voice channel")
+            return
+
+        if todo == 'tirion':
+            await Utilities.play_sound(voice.channel, 'sounds/hearthstone/tirion.mp3')
+        elif todo is None or todo == '' or todo == 'random':
+            await Utilities.play_sound(voice.channel, 'sounds/hearthstone/' + random.choice(os.listdir('sounds/hearthstone')))
+        else:
+            await ctx.channel.send('Unknown command')
+
+    @commands.command()
+    async def bag(self, ctx, todo: typing.Optional[str] = 'random'):
+        voice = ctx.author.voice
+        if not voice:
+            logger.info("!erdener triggered but not in voice channel")
+            return
+
+        if os.path.exists('sounds/dota/bag/' + todo + '.mpeg'):
+            await Utilities.play_sound(voice.channel, 'sounds/dota/bag/' + todo + '.mpeg')
+        elif todo is None or todo == '' or todo == 'random':
+            await Utilities.play_sound(voice.channel, 'sounds/dota/bag/' + random.choice(os.listdir('sounds/dota/bag')))
+        else:
+            await ctx.channel.send('Unknown command')
+
     async def react_lost_ark(self, message):
         rand = random.randint(0, 100)
         if (datetime.datetime.now() - self.last_reaction).seconds > 300:

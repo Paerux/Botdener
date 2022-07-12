@@ -52,8 +52,8 @@ class RSSModule(commands.Cog):
         seen_guids = database.get_rss_list()
         try:
             for item in item_dict:
-                if datetime.datetime.strptime(item['pubdate'], database.DATE_FORMAT) > \
-                        datetime.datetime.strptime(seen_guids[key], database.DATE_FORMAT):
+                if datetime.datetime.strptime(item['pubdate'], database.RSS_DATE_FORMAT) > \
+                        datetime.datetime.strptime(seen_guids[key], database.RSS_DATE_FORMAT):
                     database.add_rss_id(key, item['pubdate'])
                     logger.info('Found new rss')
                     cleartag = re.compile('<.*?>')

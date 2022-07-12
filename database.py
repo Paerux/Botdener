@@ -3,7 +3,8 @@ import logging
 from contextlib import contextmanager
 from datetime import datetime
 
-DATE_FORMAT = "%a, %d %b %Y %H:%M:%S %z"
+RSS_DATE_FORMAT = "%a, %d %b %Y %H:%M:%S %z"
+UYANMIS_DATE_FORMAT = "%a, %d %b %Y %H:%M:%S"
 
 
 @contextmanager
@@ -29,7 +30,7 @@ def get_last_uyanmis(userid):
     with access_database('db/uyanmis.json') as data:
         try:
             date = data[userid]
-            return datetime.strptime(date, DATE_FORMAT)
+            return datetime.strptime(date, UYANMIS_DATE_FORMAT)
         except KeyError as e:
             logging.getLogger(__name__).error(e)
 
