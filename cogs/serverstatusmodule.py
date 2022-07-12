@@ -1,9 +1,10 @@
 import logging
-
 from discord.ext import commands  # noqa
 import threading
 import requests
 from bs4 import BeautifulSoup
+
+logger = logging.getLogger(__name__)
 
 
 class ServerStatusModule(commands.Cog):
@@ -13,7 +14,6 @@ class ServerStatusModule(commands.Cog):
         self.is_running = False
         self._timer = None
         self.last_status = 'Live'
-        self.logger = logging.getLogger(__name__)
 
     def _run(self):
         self.is_running = False
@@ -50,7 +50,7 @@ class ServerStatusModule(commands.Cog):
                     self.last_status = 'Down'
                     self.bot.loop.create_task(self.send_status_message('Kadan server is up Down Sadge'))
             else:
-                self.logger.warning('maintenance server tag not found')
+                logger.warning('maintenance server tag not found')
                 if self.last_status == 'Live':
                     self.last_status = 'Down'
                     self.bot.loop.create_task(self.send_status_message('Kadan server is up Down Sadge'))

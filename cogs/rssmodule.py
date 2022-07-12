@@ -6,8 +6,11 @@ from bs4 import BeautifulSoup
 from discord.ext import commands  # noqa
 import threading
 import re
+
 import database
 from cogs.utilities import Utilities
+
+logger = logging.getLogger(__name__)
 
 
 class RSSModule(commands.Cog):
@@ -16,7 +19,6 @@ class RSSModule(commands.Cog):
         self.interval = interval
         self.is_running = False
         self._timer = None
-        self.logger = logging.getLogger(__name__)
 
     def _run(self):
         self.is_running = False
@@ -53,7 +55,7 @@ class RSSModule(commands.Cog):
                 if datetime.datetime.strptime(item['pubdate'], database.DATE_FORMAT) > \
                         datetime.datetime.strptime(seen_guids[key], database.DATE_FORMAT):
                     database.add_rss_id(key, item['pubdate'])
-                    self.logger.info('Found new rss')
+                    logger.info('Found new rss')
                     cleartag = re.compile('<.*?>')
                     self.bot.loop.create_task(self.send_status_message(title))
                     message = re.sub(cleartag, '', item['description'])
@@ -63,7 +65,7 @@ class RSSModule(commands.Cog):
                     message = Utilities.case_sensitive_replace(message, 'lost ark', 'çöp ark')
                     self.bot.loop.create_task(self.send_status_message(message))
         except Exception as e:
-            self.logger.error(e)
+            logger.error(e)
 
     async def send_status_message(self, message):  # noqa
         channel = self.bot.get_channel(891317992628031528)

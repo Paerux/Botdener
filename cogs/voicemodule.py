@@ -1,14 +1,14 @@
 import datetime
 import logging
-
 import discord  # noqa
 from discord import ClientException, FFmpegPCMAudio  # noqa
 from discord.commands import ApplicationContext, Option  # noqa
 from discord.ext import commands  # noqa
 import speech_recognition as sr
-
 import database
 from cogs.utilities import Utilities
+
+logger = logging.getLogger(__name__)
 
 
 class VoiceModule(commands.Cog):
@@ -18,12 +18,11 @@ class VoiceModule(commands.Cog):
         self.connections = {}
         self.config = config
         self.uyanmis_list = config['uyanmis_users']
-        self.logger = logging.getLogger(__name__)
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
         if not before.channel and after.channel:
-            self.logger.info(f'{member} has joined a voice channel')
+            logger.info(f'{member} has joined a voice channel')
             voice_channel = member.voice.channel
             if not voice_channel:
                 return
@@ -44,7 +43,7 @@ class VoiceModule(commands.Cog):
         if bot_connection:
             await bot_connection.disconnect()
         else:
-            self.logger.warning('kaybol : Not connected to any channel')
+            logger.warning('kaybol : Not connected to any channel')
 
     @commands.command()
     async def start(self, ctx):
@@ -68,7 +67,7 @@ class VoiceModule(commands.Cog):
             )
             await ctx.reply("The recording has started!")
         except ClientException as e:
-            self.logger.error(e)
+            logger.error(e)
 
     @staticmethod
     async def finished_callback(sink, channel: discord.TextChannel, *args):

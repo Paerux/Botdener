@@ -1,9 +1,10 @@
 import logging
-
 from discord.ext import commands  # noqa
 import discord  # noqa
 import yaml
 from discord import FFmpegPCMAudio, ClientException  # noqa
+
+import Logger
 from cogs.rssmodule import RSSModule
 from cogs.serverstatusmodule import ServerStatusModule
 from cogs.textmodule import TextModule
@@ -31,6 +32,7 @@ rssmodule = RSSModule(bot, 10)
 
 bot.add_cog(rssmodule)
 bot.add_cog(serverstatusmodule)
+Logger.setup()
 logger = logging.getLogger(__name__)
 
 

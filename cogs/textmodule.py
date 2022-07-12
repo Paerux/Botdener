@@ -5,7 +5,11 @@ import typing
 
 from discord.ext import commands  # noqa
 import random
+
+import Logger
 from cogs.utilities import Utilities
+
+logger = logging.getLogger(__name__)
 
 
 class TextModule(commands.Cog):
@@ -15,7 +19,6 @@ class TextModule(commands.Cog):
         self.bot = bot
         self.config = config
         self.uyanmis_list = self.config['uyanmis_users']
-        self.logger = logging.getLogger(__name__)
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -29,7 +32,7 @@ class TextModule(commands.Cog):
     async def erdener(self, ctx, todo: typing.Optional[str] = 'random'):
         voice = ctx.author.voice
         if not voice:
-            self.logger.info("!erdener triggered but not in voice channel")
+            logger.info("!erdener triggered but not in voice channel")
             return
 
         if todo == 'uyan':
