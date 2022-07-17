@@ -36,7 +36,7 @@ class TwitterModule(commands.Cog):
                 else:
                     name = 'Unknown'
 
-                self.bot.loop.create_task(self.send_tweet(name + " tweeted:"))
+                self.bot.loop.create_task(self.send_tweet(str(name) + " tweeted:"))
                 text = Utilities.case_sensitive_replace(tweet['data']['text'], 'lost ark', 'çöp ark')
                 self.bot.loop.create_task(self.send_tweet(text))
             except Exception as e:

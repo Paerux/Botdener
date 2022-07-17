@@ -45,4 +45,7 @@ def get_rss_list():
 
 def add_rss_id(key, date):
     with access_database('db/rssdb.json') as data:
-        data[key] = date
+        try:
+            data[key] = date
+        except KeyError as e:
+            logging.getLogger(__name__).error(e)

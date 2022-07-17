@@ -36,24 +36,28 @@ class ServerStatusModule(commands.Cog):
         source_code = req.text
         soup = BeautifulSoup(source_code, 'html.parser')
         items = soup.select('.ags-ServerStatus-content-responses-response-server:-soup-contains("Kadan")')
+
+        if len(items) <= 0:
+            if self.last_status == 'Live':
+                self.last_status = 'Down'
+                self.bot.loop.create_task(self.send_status_message('Kadan server is down Sadge'))
+                return
+
         for tag in items:
             if tag.find('div', attrs={
                 'class': 'ags-ServerStatus-content-responses-response-server-status '
                          'ags-ServerStatus-content-responses-response-server-status--good'}):
                 if self.last_status == 'Down':
                     self.last_status = 'Live'
-                    self.bot.loop.create_task(self.send_status_message('Kadan server is up Poggers'))
+                    self.bot.loop.create_task(self.send_status_message('@Encore Kadan server is up Poggers'))
+                    return
             elif tag.find('div', attrs={
                 'class': 'ags-ServerStatus-content-responses-response-server-status '
                          'ags-ServerStatus-content-responses-response-server-status--maintenance'}):
                 if self.last_status == 'Live':
                     self.last_status = 'Down'
-                    self.bot.loop.create_task(self.send_status_message('Kadan server is up Down Sadge'))
-            else:
-                logger.warning('maintenance server tag not found')
-                if self.last_status == 'Live':
-                    self.last_status = 'Down'
-                    self.bot.loop.create_task(self.send_status_message('Kadan server is up Down Sadge'))
+                    self.bot.loop.create_task(self.send_status_message('Kadan server is down Sadge'))
+                    return
 
     async def send_status_message(self, message):
         channel = self.bot.get_channel(891317992628031528)

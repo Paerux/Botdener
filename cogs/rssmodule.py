@@ -49,21 +49,22 @@ class RSSModule(commands.Cog):
              'guid': a.find('guid').text,
              'pubdate': a.find('pubdate').text} for a in items]
 
-        seen_guids = database.get_rss_list()
+        last_rss_times = database.get_rss_list()
         try:
-            for item in item_dict:
-                if datetime.datetime.strptime(item['pubdate'], database.RSS_DATE_FORMAT) > \
-                        datetime.datetime.strptime(seen_guids[key], database.RSS_DATE_FORMAT):
-                    database.add_rss_id(key, item['pubdate'])
-                    logger.info('Found new rss')
-                    cleartag = re.compile('<.*?>')
-                    self.bot.loop.create_task(self.send_status_message(title))
-                    message = re.sub(cleartag, '', item['description'])
-                    # Can't post to discord over 2000 characters
-                    if len(message) > 1950:
-                        message = message[:1950] + '..'
-                    message = Utilities.case_sensitive_replace(message, 'lost ark', 'çöp ark')
-                    self.bot.loop.create_task(self.send_status_message(message))
+            rss_date = item_dict[0]['pubdate']
+            if datetime.datetime.strptime(rss_date, database.RSS_DATE_FORMAT) > \
+                    datetime.datetime.strptime(last_rss_times[key], database.RSS_DATE_FORMAT):
+                database.add_rss_id(key, rss_date)
+                logger.info('Found new rss')
+                cleartag = re.compile('<.*?>')
+                self.bot.loop.create_task(self.send_status_message(title))
+                message = re.sub(cleartag, '', item_dict[0]['description'])
+                # Can't post to discord over 2000 characters
+                if len(message) > 1950:
+                    message = message[:1950] + '..'
+                message = Utilities.case_sensitive_replace(message, 'lost ark', 'çöp ark')
+                self.bot.loop.create_task(self.send_status_message(message))
+
         except Exception as e:
             logger.error(e)
 

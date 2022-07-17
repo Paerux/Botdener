@@ -81,6 +81,26 @@ class TextModule(commands.Cog):
             await Utilities.play_sound(voice.channel, 'sounds/tabiefendim.mp3')
         elif todo == 'bruh':
             await Utilities.play_sound(voice.channel, 'sounds/bruh.mp3')
+        elif todo == 'çekirdek':
+            await Utilities.play_sound(voice.channel, 'sounds/cekirdek.mp3')
+        elif todo == 'çıkış':
+            await Utilities.play_sound(voice.channel, 'sounds/cikisyapiyorum.mp3')
+        elif todo == 'existentialcrisis':
+            await Utilities.play_sound(voice.channel, 'sounds/existentialcrisis.mp3')
+        elif todo == 'kanımdavar':
+            await Utilities.play_sound(voice.channel, 'sounds/kanimdavar.mp3')
+        elif todo == 'uçtu':
+            await Utilities.play_sound(voice.channel, 'sounds/kusolupuctu.mp3')
+        elif todo == 'lokmacı':
+            await Utilities.play_sound(voice.channel, 'sounds/lokmaci.mp3')
+        elif todo == 'lokmata':
+            await Utilities.play_sound(voice.channel, 'sounds/lokmata.mp3')
+        elif todo == 'riskli':
+            await Utilities.play_sound(voice.channel, 'sounds/riskli.mp3')
+        elif todo == 'running':
+            await Utilities.play_sound(voice.channel, 'sounds/whyareyourunning.mp3')
+        elif todo == 'alındım' or todo == 'gücendim':
+            await Utilities.play_sound(voice.channel, 'sounds/alindim.mp3')
         elif todo == 'kırkharamiler':
             if ctx.author.id == 241562701497761792:
                 await Utilities.play_sound(voice.channel, 'sounds/kirkharamiler.mp3')
