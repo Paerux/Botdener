@@ -1,1 +1,1 @@
-bot_confige tokeni gir xd
+Fun discord bot for me and my friends to use (mostly turkish stuff)
